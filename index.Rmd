@@ -1,6 +1,6 @@
 ---
 title: "BIO 453 Ecology"
-image: "frank.jpg"
+image: "solidago.jpg"
 links:
   - label: GitHub
     url: "https://github.com/PaleoNate"
@@ -15,7 +15,7 @@ site: distill::distill_website
  
 ## Welcome
 
-This is the unofficial course website for BIO 453: Ecology at William Jewell College. This is my first attempt at creating a course with the distill package. Students enrolled in the course will still access the course via BrightSpace.
+This is the unofficial course website for BIO 453: Ecology at William Jewell College. This is my first attempt at creating a course with the distill package. Students enrolled in the course will still access the course on BrightSpace.
 
 ## Course Information
 
