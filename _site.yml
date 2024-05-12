@@ -1,8 +1,9 @@
 name: "."
-title: "BIO 453 Ecology"
+title: "Home"
 description: |
   BIO 453 Ecology
 output_dir: "docs"
+theme: course-theme.css
 navbar:
   right:
     - text: "Home"
