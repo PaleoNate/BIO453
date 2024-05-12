@@ -1,0 +1,24 @@
+---
+title: "BIO 453 Ecology"
+image: "frank.jpg"
+links:
+  - label: GitHub
+    url: "https://github.com/PaleoNate"
+  - label: BrightSpace
+    url: "https://learn.jewell.edu/d2l/loginh/ target = '_blank' "
+  - label: Email
+    url: "mailto:judn@william.jewell.edu"
+output:
+  postcards::trestles
+site: distill::distill_website
+---
+ 
+## Welcome
+
+This is the unofficial course website for BIO 453: Ecology at William Jewell College. This is my first attempt at creating a course with the distill package. Students enrolled in the course will still access the course via BrightSpace.
+
+## Course Information
+
+**Instructor** | Nathan A Jud PhD
+
+**William Jewell College** | Biology Department | Fall 2024
