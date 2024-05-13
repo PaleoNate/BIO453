@@ -1,0 +1,44 @@
+---
+title: "Getting started with R"
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Using R
+
+Check out these three online, interactive lessons to see the cool things you can do with R (these lessons use the `learnr` package)
+
+- Draw boxplots
+- <a href="https://batoolmm.shinyapps.io/tutorials/#section-generating-sequences-part-1" target="_blank">Generate sequences</a>
+- <a href="https://batoolmm.shinyapps.io/tutorials/#section-representing-data-with-boxplots" target="_blank">Representing data with boxplots</a>
+
+## Setting up RStudio Cloud
+
+<iframe width="560" height="400" src="https://www.youtube.com/embed/L2KT0ls_oIk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+- Packages used in all the lessons: `tidyverse`, `leaflet`, `ggeasy`, `astsa`
+
+## Creating a new R Project (RStudio Cloud & Desktop)
+
+<iframe width="560" height="400" src="https://www.youtube.com/embed/8P9E9Ut0xhQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## My first R lessons using R Markdown 
+- [Lesson #1: Introduction to R markdown](https://r-girls.github.io/website/R/2022-02-26-markdown1post/)
+- [Lesson #2: Baby steps in coding R](https://r-girls.github.io/website/R/2022-02-26-markdown2post/)
+
+# Thanks R-Girls
+I plan to compile my own resources for getting started with R; but for now, thanks R-Girls for putting togther some great resources.
+- [R-Girls](https://r-girls.github.io/website/R/2022-02-26-markdown2post/)
+
+
+
+
+
