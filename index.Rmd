@@ -22,3 +22,19 @@ This is the unofficial course website for BIO 453: Ecology at William Jewell Col
 **Instructor** | Nathan A Jud PhD
 
 **William Jewell College** | Biology Department | Fall 2024
+
+## Notes
+
+I plan to create the following lab modules
+linear regression
+ANOVA
+mark-recapture methods
+metapopulation dynamics
+source sink dynamics
+competition (LV/R*)
+predation
+Island biogeography
+Estimating_Diversity with collection curves and rarefaction
+Neutral_Theory
+Janzen-Connell_hypothesis
+
