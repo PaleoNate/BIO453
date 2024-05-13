@@ -30,7 +30,7 @@ Spread your bean boats on the table in front you and dump them out. Now play the
 
 Load necessary packages for your data analysis
 
-```{r}
+```{r echo = TRUE}
 library(readxl)
 library(ggplot2)
 library(ggpmisc)
@@ -41,10 +41,8 @@ library(performance)
 
 Read in your data file
 
-```{r}
+```{r echo=TRUE}
 # Load data
-
-#data <- read_excel(file.choose())
 #data <- read_excel("bean_data.xlsx")
 
 # Create the lot numbers
@@ -64,25 +62,16 @@ mydata <- data.frame(lot = lot,
                    trial2_weights)
 ```
 
-Plot your data
+Now lets generate a linear model.
 
-```{r}
-# Plot trial 1 weights against lot number
-# Create the plot without stat_regline_equation
-plot_trial1 <- ggplot(mydata, aes(x = lot, y = `trial1_weights`)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  labs(title = "Trial 1 Weights vs. Lot Number",
-       x = "Lot Number",
-       y = "Trial 1 Weights")
-
-# Fit linear regression outside of ggplot
+```{r echo=TRUE}
+# Fit linear regression
 lm_model <- lm(`trial1_weights` ~ lot, data = mydata)
 ```
 
-Before moving on, lets consider whether a linear regression was appropriate for these data by checking the questions generated below.
+Before moving on, we should consider whether a linear regression was appropriate for these data by checking the plots below and critically evaluting them. Are there any major issues?
 
-```{r}
+```{r echo=TRUE}
 # Check model assumptions
 check_model(x=lm_model, check="normality")
 check_model(x=lm_model, check="linearity")
@@ -92,17 +81,16 @@ check_model(x=lm_model, check="outliers")
 
 Now lets look at the model output
 
-```{r}
+```{r echo=TRUE}
 #evaluate the linear model
 summary(lm_model)
 ```
 
-Is the slope of the regression line through the data from your first trial non-zero? Is it *significantly* different from zero at the alpha=0.05 level? Do we reject or fail to reject your null hypothesis? 
-
+Is the slope of the regression line through the data from your first trial non-zero? Is it **significantly** different from zero at the alpha=0.05 level? Do we reject or fail to reject your null hypothesis? 
 
 Okay, now lets look at the plot below. How can you explain this pattern light of your alternative hypothesis? Don't forget to report the linear equation, the $r^2$ value, and the p-value for each regression.
 
-```{r}
+```{r echo=TRUE}
 # Extract coefficients
 intercept <- coef(lm_model)[1]
 slope <- coef(lm_model)[2]
@@ -110,10 +98,21 @@ slope <- coef(lm_model)[2]
 # Create equation text
 equation_text <- paste("y =", round(intercept, 2), "+", round(slope, 2), "x")
 
+# Plot trial 1 weights against lot number
+# Create the plot without stat_regline_equation
+plot_trial1 <- ggplot(mydata, aes(x = lot, y = `trial1_weights`)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(title = "Trial 1 Weights vs. Lot Number",
+       x = "Lot Number",
+       y = "Trial 1 Weights")
+
 # Add equation annotation to the plot
 plot_trial1 <- plot_trial1 +
   annotate("text", x = max(mydata$lot), y = max(mydata$trial1_weights), 
-           label = equation_text, hjust = 1, vjust = 1)
+           label = equation_text, hjust = 1, vjust = 1) +
+	annotate("text", x = max(mydata$lot), y = max(mydata$trial1_weights), 
+           label = "R^2 = value", hjust = 1, vjust = 3)
 
 # Plot trial 2 weights against lot number
 plot_trial2 <- ggplot(mydata, aes(x = lot, y = `trial2_weights`)) +
