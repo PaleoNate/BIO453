@@ -1,5 +1,22 @@
 [
   {
+    "path": "labs/2024-05-13-competition/",
+    "title": "Competition",
+    "description": "Competition with Lotka-Volterra models",
+    "author": [
+      {
+        "name": "Nathan Jud",
+        "url": {}
+      }
+    ],
+    "date": "2024-05-13",
+    "categories": [],
+    "contents": "\nLearning Objectives:\nUnderstand the basics of constructing a phase plane diagram for a Lotka-Volterra style model.\nDifferentiate between intraspecific and interspecific competition in ecological systems.\nIdentify zero net growth isoclines and their significance in population dynamics.\nExplore the concept of niche and its relationship with the assumptions of the Lotka-Volterra model.\nIntroduce multi-species coexistence models as an extension of Lotka-Volterra.\nReflective Questions:\nWhat are the key differences between intraspecific and interspecific competition?\nHow do zero net growth isoclines help us understand the stability of population dynamics?\nIn what ways do the assumptions of the Lotka-Volterra model simplify real-world ecological systems?\nCan you think of examples where species coexist in an ecosystem despite competing for the same resources?\nHow might adding more species to the Lotka-Volterra model affect its complexity and predictive power?\n\n\n\n\n\n\n\n\n\nReflective Questions:\nWhat do the zero net growth isoclines represent in this diagram?\nHow do the trajectories of species populations change over time?\nWhat does this indicate about their interactions?\nHow might changes in parameter values alter the stability of the system depicted in the phase plane diagram?\nConsider real-world ecosystems. Can you think of situations where the assumptions of the Lotka-Volterra model might not hold true?\nHow would you extend this model to include more than two competing species?\nWhat challenges might arise in such a scenario?\n\n\n\n",
+    "preview": "labs/2024-05-13-competition/competition_files/figure-html5/unnamed-chunk-3-1.png",
+    "last_modified": "2024-05-13T15:42:52-05:00",
+    "input_file": "competition.knit.md"
+  },
+  {
     "path": "labs/2024-05-12-beans/",
     "title": "The Bean Experiment",
     "description": "adapted from an exercise by Barry Sinervo",

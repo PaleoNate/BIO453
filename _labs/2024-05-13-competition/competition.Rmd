@@ -1,0 +1,93 @@
+---
+title: "Competition"
+description: |
+  Competition with Lotka-Volterra models
+author: Nathan Jud
+date: 2024-05-13
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Learning Objectives:
+1. Understand the basics of constructing a phase plane diagram for a Lotka-Volterra style model.
+2. Differentiate between intraspecific and interspecific competition in ecological systems.
+3. Identify zero net growth isoclines and their significance in population dynamics.
+4. Explore the concept of niche and its relationship with the assumptions of the Lotka-Volterra model.
+5. Introduce multi-species coexistence models as an extension of Lotka-Volterra.
+
+# Reflective Questions:
+1. What are the key differences between intraspecific and interspecific competition?
+2. How do zero net growth isoclines help us understand the stability of population dynamics?
+3. In what ways do the assumptions of the Lotka-Volterra model simplify real-world ecological systems?
+4. Can you think of examples where species coexist in an ecosystem despite competing for the same resources?
+5. How might adding more species to the Lotka-Volterra model affect its complexity and predictive power?
+
+```{r echo=FALSE}
+# Load required libraries
+library(ggplot2)
+```
+
+```{r}
+# Define Lotka-Volterra equations
+LV_equations <- function(t, N, params) {
+  with(as.list(c(N, params)), {
+    dN1 <- r1 * N1 * (1 - (N1 * alpha1 + N2 * beta1))
+    dN2 <- r2 * N2 * (1 - (N1 * alpha2 + N2 * beta2))
+    return(list(c(dN1, dN2)))
+  })
+}
+```
+
+```{r}
+# Set parameters
+r1 <- 0.5  # Intrinsic growth rate of species 1
+r2 <- 0.7  # Intrinsic growth rate of species 2
+alpha1 <- 0.02  # Intraspecific competition coefficient for species 1
+alpha2 <- 0.03  # Intraspecific competition coefficient for species 2
+beta1 <- 0.01  # Interspecific competition coefficient for species 1
+beta2 <- 0.02  # Interspecific competition coefficient for species 2
+
+# Time vector
+time <- seq(0, 100, by = 0.1)
+
+# Initial population sizes
+N1_0 <- 10
+N2_0 <- 10
+
+# Run simulations
+library(deSolve)
+LV_simulation <- ode(y = c(N1 = N1_0, N2 = N2_0), times = time, func = LV_equations, parms = c(r1 = r1, r2 = r2, alpha1 = alpha1, alpha2 = alpha2, beta1 = beta1, beta2 = beta2))
+
+# Create phase plane diagram
+ggplot(data = as.data.frame(LV_simulation), aes(x = N1, y = N2)) +
+  geom_path() +
+  geom_point(aes(color = "Trajectory")) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "blue") +
+  geom_abline(intercept = r1/alpha1, slope = -beta1/alpha1, linetype = "solid", color = "darkred") +
+  geom_abline(intercept = r2/alpha2, slope = -beta2/alpha2, linetype = "solid", color = "forestgreen") +
+  labs(x = "Species 1", y = "Species 2", color = "Legend") +
+  theme_minimal() +
+  scale_color_manual(values = c("Trajectory" = "black")) +
+  ggtitle("Phase Plane Diagram: Lotka-Volterra Model") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### Reflective Questions: 
+* What do the zero net growth isoclines represent in this diagram?
+
+* How do the trajectories of species populations change over time? 
+* What does this indicate about their interactions?
+
+* How might changes in parameter values alter the stability of the system depicted in the phase plane diagram?
+
+* Consider real-world ecosystems. Can you think of situations where the assumptions of the Lotka-Volterra model might not hold true?
+
+* How would you extend this model to include more than two competing species? 
+* What challenges might arise in such a scenario?
