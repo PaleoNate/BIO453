@@ -34,7 +34,9 @@ Load necessary packages for your data analysis
 library(readxl)
 library(ggplot2)
 library(ggpmisc)
-library(CGPfunctions)
+library(see)
+library(patchwork)
+library(performance)
 ```
 
 Read in your data file
@@ -57,7 +59,7 @@ trial2_weights <- c(1.2, 1.1, 1, 0.9, 0.9, 0.9, 0.85, 0.8, 0.75, 0.7,
                     0.7, 0.65, 0.65, 0.6, 0.6, 0.57, 0.55, 0.5, 0.5, 0.5)
 
 # Combine into a dataframe
-data <- data.frame(lot = lot, 
+mydata <- data.frame(lot = lot, 
                    trial1_weights, 
                    trial2_weights)
 ```
@@ -66,18 +68,55 @@ Plot your data
 
 ```{r}
 # Plot trial 1 weights against lot number
-plot_trial1 <- ggplot(data, aes(x = lot, y = `trial1_weights`)) +
+# Create the plot without stat_regline_equation
+plot_trial1 <- ggplot(mydata, aes(x = lot, y = `trial1_weights`)) +
   geom_point() +
-	geom_smooth(method = "lm", se = TRUE) +
-	stat_regline_equation(label.x = "right", label.y = "top", 
-                        aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), 
-                        formula = y ~ x) +
+  geom_smooth(method = "lm", se = TRUE) +
   labs(title = "Trial 1 Weights vs. Lot Number",
        x = "Lot Number",
        y = "Trial 1 Weights")
 
+# Fit linear regression outside of ggplot
+lm_model <- lm(`trial1_weights` ~ lot, data = mydata)
+```
+
+Before moving on, lets consider whether a linear regression was appropriate for these data by checking the questions generated below.
+
+```{r}
+# Check model assumptions
+check_model(x=lm_model, check="normality")
+check_model(x=lm_model, check="linearity")
+check_model(x=lm_model, check="homogeneity")
+check_model(x=lm_model, check="outliers")
+```
+
+Now lets look at the model output
+
+```{r}
+#evaluate the linear model
+summary(lm_model)
+```
+
+Is the slope of the regression line through the data from your first trial non-zero? Is it *significantly* different from zero at the alpha=0.05 level? Do we reject or fail to reject your null hypothesis? 
+
+
+Okay, now lets look at the plot below. How can you explain this pattern light of your alternative hypothesis? Don't forget to report the linear equation, the $r^2$ value, and the p-value for each regression.
+
+```{r}
+# Extract coefficients
+intercept <- coef(lm_model)[1]
+slope <- coef(lm_model)[2]
+
+# Create equation text
+equation_text <- paste("y =", round(intercept, 2), "+", round(slope, 2), "x")
+
+# Add equation annotation to the plot
+plot_trial1 <- plot_trial1 +
+  annotate("text", x = max(mydata$lot), y = max(mydata$trial1_weights), 
+           label = equation_text, hjust = 1, vjust = 1)
+
 # Plot trial 2 weights against lot number
-plot_trial2 <- ggplot(data, aes(x = lot, y = `trial2_weights`)) +
+plot_trial2 <- ggplot(mydata, aes(x = lot, y = `trial2_weights`)) +
   geom_point() +
   labs(title = "Trial 2 Weights vs. Lot Number",
        x = "Lot Number",
@@ -86,31 +125,6 @@ plot_trial2 <- ggplot(data, aes(x = lot, y = `trial2_weights`)) +
 # Display plots
 plot_trial1
 plot_trial2
-```
-
-What is the pattern of size change in your samples of beans from the first draw to the last draw?
-
-
-
-
-Is the slope of the regression line through the data from your first trial non-zero? Is it *significantly* different from zero at the alpha=0.05 level? Do we reject or fail to reject your null hypothesis? How can you explain this pattern light of your alternative hypothesis?
-
-Report a linear model, $r^2$ value, and p-value for each trial.
-
-Before moving on, lets consider whether a linear regression was appropriate for these data by checking the questions generated below.
-
-```{r}
-# Perform linear regression for trial 1
-lm_trial1 <- lm(trial1_weights ~ lot, data = data)
-
-# Check assumptions for trial 1
-check_lm_assumptions(lm_trial1)
-
-# Perform linear regression for trial 2
-lm_trial2 <- lm(trial2_weights ~ lot, data = data)
-
-# Check assumptions for trial 2
-check_lm_assumptions(lm_trial2)
 ```
 
 ## The lab report
