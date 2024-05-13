@@ -14,14 +14,14 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-# Learning Objectives:
+### Learning Objectives:
 1. Understand the basics of constructing a phase plane diagram for a Lotka-Volterra style model.
 2. Differentiate between intraspecific and interspecific competition in ecological systems.
 3. Identify zero net growth isoclines and their significance in population dynamics.
 4. Explore the concept of niche and its relationship with the assumptions of the Lotka-Volterra model.
 5. Introduce multi-species coexistence models as an extension of Lotka-Volterra.
 
-# Reflective Questions:
+### Preparation Questions:
 1. What are the key differences between intraspecific and interspecific competition?
 2. How do zero net growth isoclines help us understand the stability of population dynamics?
 3. In what ways do the assumptions of the Lotka-Volterra model simplify real-world ecological systems?

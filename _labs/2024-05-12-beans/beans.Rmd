@@ -14,7 +14,7 @@ made with your staff. You cover that hole with your foot and thm move a few feet
 
 Now, you are not consiously doing anything to improve your crop. You are not selecting beans of a particular type or size. You simply have a pouch of beans that you are planting. Given this assumption, what do you predict would be the pattern of the bean size over time? Do you expect the beans you have at the beginning of your planting season to be the same size as the beans you have at the end of your planting season? If, not, how do you expect them to differ? If you do not thing your remaining beans are a random subset of your starting beans, what is the basis for your expectation? Make null and alternative hypotheses for the pattern of bean size over time.
 
-## Part 1
+### Part 1
 
 Get a bag of approximately 200 beans.  
 
@@ -22,11 +22,11 @@ Reach into the bag and pick up approximately 5-10 beans with our fingers and rol
 
 Create 20 such lots in sequence, weigh each lot, and divide by the number of beans to get the mean weight of beans in each lot. Record your data in a table. Your table should have a column for "lot" and a column for "trial1_weights" in an excel file called "bean_data.xlsx".
 
-## Part 2
+### Part 2
 
 Spread your bean boats on the table in front you and dump them out. Now play the part of the farmer purposefully trying to improve the crop by selecting the largest beans to plant first. How does this change your expectation of the pattern of bean size over time?  Sort your beans into lots with your preferred beans in the earliest lots and your least preferred beans in your later lots. Reweigh your lots and record your data in a new column called "trial2_weights".
 
-## Part 3
+### Part 3
 
 Load necessary packages for your data analysis
 
@@ -62,12 +62,26 @@ mydata <- data.frame(lot = lot,
                    trial2_weights)
 ```
 
+#### Plot your data
+
+```{r echo=FALSE}
+plot_data <- ggplot(mydata, aes(x = lot, y = `trial1_weights`)) +
+  geom_point() +
+	labs(title = "Trial 1 Weights vs. Lot Number",
+       x = "Lot Number",
+       y = "Trial 1 Weights")
+	
+plot_data
+```
+
 Now lets generate a linear model.
 
 ```{r echo=TRUE}
 # Fit linear regression
 lm_model <- lm(`trial1_weights` ~ lot, data = mydata)
 ```
+
+#### Model evaluation
 
 Before moving on, we should consider whether a linear regression was appropriate for these data by checking the plots below and critically evaluting them. Are there any major issues?
 
@@ -78,6 +92,8 @@ check_model(x=lm_model, check="linearity")
 check_model(x=lm_model, check="homogeneity")
 check_model(x=lm_model, check="outliers")
 ```
+
+#### Proceed with the model
 
 Now lets look at the model output
 

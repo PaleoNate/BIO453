@@ -9,11 +9,11 @@ output: distill::distill_article
 library(ggplot2)
 ```
 
-## Introduction to Population Growth Models
+### Introduction to Population Growth Models
 
 In ecology, understanding how populations may change over time is crucial. Two common models used to describe population growth are the exponential growth model of density-independent population growth and the logistic growth model fo density-dependent population growth.
 
-#Exponential Population Growth
+### Exponential Population Growth
 Exponential growth occurs when a population increases by a constant proportion over a fixed time period. It is often described by the equation:
 
 $$
