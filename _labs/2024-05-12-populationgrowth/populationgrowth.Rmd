@@ -1,0 +1,142 @@
+---
+title: "Population growth 1"
+description: introduction to population growth
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r echo=FALSE}
+library(ggplot2)
+```
+
+## Introduction to Population Growth Models
+
+In ecology, understanding how populations may change over time is crucial. Two common models used to describe population growth are the exponential growth model of density-independent population growth and the logistic growth model fo density-dependent population growth.
+
+#Exponential Population Growth
+Exponential growth occurs when a population increases by a constant proportion over a fixed time period. It is often described by the equation:
+
+$$
+N_t=N_0×e^{rt}
+$$
+Where:
+
+* $N_t$ is the population size at time $t$.  
+* $N_0$ is the initial population size.  
+* $r$ is the per capita rate of increase; also called the per capita growth rate, or instantaneous rate of increase.  
+* $e$ is the base of the natural logarithm.  
+
+Let's visualize exponential population growth using R and ggplot2:
+
+```{r}
+# Define parameters
+N0 <- 100 # Initial population size
+r <- 0.1 # Growth rate
+time <- seq(0, 50, by = 1) # Time period
+
+# Calculate population size
+Nt <- N0 * exp(r * time)
+
+# Create data frame
+df <- data.frame(time, Nt)
+
+# Plot
+ggplot(df, aes(x = time, y = Nt)) +
+  geom_line(color = "blue") +
+  labs(title = "Exponential Population Growth",
+       x = "Time",
+       y = "Population Size") +
+  theme_bw()
+```
+
+As you can see in the figure above, exponential growth results in a continuously increasing population size as time proceeds.
+
+### Logistic Population Growth
+
+Logistic growth takes into account limiting factors that might depress the per-capita birth rate, increase the per-capita death rate, or both as populaiton density increases. Possible factors often include limited resource availability. The logistic growth model is described by the equation:
+
+$$
+{dN/dt}=rN(1-{N/K})
+$$
+
+Where:
+
+* $dN/dt$ represents the rate of change of the population over time.  
+* $N$ is the population size.    
+* $r$ is the intrinsic per capita growth rate, just as before. 
+* $K$ is the carrying capacity.  
+
+Let's visualize logistic population growth using R and ggplot2:
+
+```{r}
+# Define parameters
+K <- 500 # Carrying capacity
+
+# Define logistic growth function
+logistic_growth <- function(N, r, K) {
+  r * N * (1 - (N / K))
+}
+
+# Simulate logistic growth
+simulated_data <- data.frame(time = time)
+simulated_data$Nt <- NA
+
+N <- N0
+for (i in 1:length(time)) {
+  dNdt <- logistic_growth(N, r, K)
+  N <- N + dNdt
+  simulated_data$Nt[i] <- N
+}
+
+# Plot
+ggplot(simulated_data, aes(x = time, y = Nt)) +
+  geom_line(color = "forestgreen") +
+  labs(title = "Logistic Population Growth",
+       x = "Time",
+       y = "Population Size")
+```
+
+In the figure above, you can observe logistic population growth. Initially, the population grows exponentially, but as it approaches the carrying capacity, the growth rate slows down until it stabilizes near the carrying capacity.
+
+### Density-Dependent Changes in Birthrate and Death Rate
+
+In logistic growth, changes in birth and death rates are density-dependent, meaning they are influenced by the population density. For outcrossing organisms, very small population densities might be dangerous because they can result in low birth rates (allee effects). However, in general at small population sizes birth rates are high and death rates are low. This resulting in rapid population growth. However, as the population grows competition for resources increases, leading to decreased birth rates and increased death rates. When birth rates and death rates balance out, the model is at carrying capacity.
+
+```{r}
+# Define population size and parameters
+population_size <- seq(0, 500, by = 10) # Population size
+per_capita_birth_rate <- 0.2 - 0.0001 * population_size # Declining per-capita birth rate
+per_capita_death_rate <- 0.1 + 0.0002 * population_size # Increasing per-capita death rate
+
+# Calculate net growth rate (birth rate - death rate)
+net_growth_rate <- per_capita_birth_rate - per_capita_death_rate
+
+# Create data frame
+df <- data.frame(population_size, per_capita_birth_rate, per_capita_death_rate)
+
+# Find intersection point
+intersection <- which.min(abs(per_capita_birth_rate - per_capita_death_rate))
+
+# Calculate carrying capacity
+carrying_capacity <- population_size[intersection]
+
+# Plot
+ggplot(df, aes(x = population_size)) +
+  geom_line(aes(y = per_capita_birth_rate, color = "Per-capita Birth Rate")) +
+  geom_line(aes(y = per_capita_death_rate, color = "Per-capita Death Rate")) +
+  geom_vline(xintercept = carrying_capacity, linetype = "dashed", color = "black") +
+  labs(title = "Changing Birth and Death Rates",
+       x = "Population Size",
+       y = "Per-capita Rate") +
+  scale_color_manual(values = c("Per-capita Birth Rate" = "blue", "Per-capita Death Rate" = "red")) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+In the plot above, you can see how the declining per-capita birth rate (blue) and increasing per-capita death rate (red) interact to set the carrying capacity (dashed red vertical line), where the net growth rate (black dashed horizontal line) becomes zero.
+
+```{r}
+# Allee effect code
+```
+
+In the plot above, you can see the non-linear birth rate (blue) with Allee effects, where the birth rate starts low, increases with population size, and then declines as competition depresses birth rates, The carrying capacity is denoted by the dashed vertical black line.
