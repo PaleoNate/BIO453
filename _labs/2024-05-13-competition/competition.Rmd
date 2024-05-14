@@ -91,3 +91,180 @@ ggplot(data = as.data.frame(LV_simulation), aes(x = N1, y = N2)) +
 
 * How would you extend this model to include more than two competing species? 
 * What challenges might arise in such a scenario?
+
+## This could be a different post.
+
+
+### Monod's equation
+
+Recall that the Monod models is a common model to predict microorganism growth.  
+
+
+```{r}
+# Function to simulate Monod model for planktonic bacteria
+monod_model <- function(X, mu_max, Ks, S) {
+  mu = mu_max * S / (Ks + S)
+  dXdt = mu * X
+  return(dXdt)
+}
+
+# Simulation parameters
+time <- seq(0, 10, by = 0.1)  # Time points
+S0 <- 10  # Initial substrate concentration
+X1_0 <- 1  # Initial biomass concentration of species 1
+X2_0 <- 1  # Initial biomass concentration of species 2
+mu_max1 <- 1  # Maximum specific growth rate of species 1
+mu_max2 <- 1.1  # Maximum specific growth rate of species 2 (slightly higher for competitive advantage)
+Ks <- 2  # Half-saturation constant (equal for both species)
+
+# Simulate Monod model for species 1
+output1 <- data.frame(time = time)
+output1$Biomass <- NA
+output1$Biomass[1] <- X1_0
+for (i in 2:length(time)) {
+  S <- S0
+  dXdt <- monod_model(output1$Biomass[i-1], mu_max1, Ks, S)
+  output1$Biomass[i] <- output1$Biomass[i-1] + dXdt * (time[i] - time[i-1])
+}
+
+# Simulate Monod model for species 2
+output2 <- data.frame(time = time)
+output2$Biomass <- NA
+output2$Biomass[1] <- X2_0
+for (i in 2:length(time)) {
+  S <- S0
+  dXdt <- monod_model(output2$Biomass[i-1], mu_max2, Ks, S)
+  output2$Biomass[i] <- output2$Biomass[i-1] + dXdt * (time[i] - time[i-1])
+}
+
+# Plot biomass dynamics for both species
+ggplot() +
+  geom_line(data = output1, aes(x = time, y = Biomass, color = "Species 1")) +
+  geom_line(data = output2, aes(x = time, y = Biomass, color = "Species 2")) +
+  labs(x = "Time", y = "Biomass", color = "Species") +
+  theme_minimal()
+```
+
+### Contois model of competition
+
+The Contois model is a classic model used to describe microbial growth in a chemostat environment, where bacteria are competing for limited resources. In this model, the growth rate of a species is proportional to the resource uptake rate and inversely proportional to the concentration of the limiting resource.
+
+```{r echo=TRUE}
+# Function to simulate Contois model
+contois_model <- function(X, mu_max, Ks, Yxs, S) {
+  # X: Biomass concentration
+  # mu_max: Maximum specific growth rate
+  # Ks: Half-saturation constant
+  # Yxs: Yield coefficient
+  # S: Substrate concentration
+  
+  mu = mu_max * S / (Ks + S)
+  dXdt = mu * X
+  return(dXdt)
+}
+```
+
+Now lets set some simulation parameters
+
+```{r}
+
+time <- seq(0, 100, by = 0.1)  # Time points
+S0 <- 10  # Initial substrate concentration
+X1_0 <- 1  # Initial biomass concentration of species 1
+X2_0 <- 0.5  # Initial biomass concentration of species 2
+mu_max1 <- 1  # Maximum specific growth rate of species 1
+mu_max2 <- 1.2  # Maximum specific growth rate of species 2
+Ks1 <- 2  # Half-saturation constant of species 1
+Ks2 <- 3  # Half-saturation constant of species 2
+Yxs1 <- 0.5  # Yield coefficient of species 1
+Yxs2 <- 0.6  # Yield coefficient of species 2
+```
+
+```{r}
+# Simulate Contois model for species 1
+output1 <- data.frame(time = time)
+output1$Species <- rep("Species 1", length(time))
+output1$Biomass <- NA
+output1$Biomass[1] <- X1_0
+for (i in 2:length(time)) {
+  S <- S0 - output1$Biomass[i-1] * Yxs1
+  dXdt <- contois_model(output1$Biomass[i-1], mu_max1, Ks1, Yxs1, S)
+  output1$Biomass[i] <- output1$Biomass[i-1] + dXdt * (time[i] - time[i-1])
+}
+
+# Simulate Contois model for species 2
+output2 <- data.frame(time = time)
+output2$Species <- rep("Species 2", length(time))
+output2$Biomass <- NA
+output2$Biomass[1] <- X2_0
+for (i in 2:length(time)) {
+  S <- S0 - (output1$Biomass[i-1] * Yxs1 + output2$Biomass[i-1] * Yxs2)
+  dXdt <- contois_model(output2$Biomass[i-1], mu_max2, Ks2, Yxs2, S)
+  output2$Biomass[i] <- output2$Biomass[i-1] + dXdt * (time[i] - time[i-1])
+}
+
+# Combine outputs
+output <- rbind(output1, output2)
+
+# Plot biomass dynamics
+ggplot(output, aes(x = time, y = Biomass, color = Species)) +
+  geom_line() +
+  labs(x = "Time", y = "Biomass", color = "Species") +
+  theme_minimal()
+```
+This plot above simulates the biomass dynamics for two bacterial species (Species 1 and Species 2) competing for a single limiting resource over time under the Contois model.
+
+```{r}
+# Function to simulate Monod model for planktonic bacteria
+monod_model <- function(X, mu_max, Ks, S) {
+  mu = mu_max * S / (Ks + S)
+  dXdt = mu * X
+  return(dXdt)
+}
+
+# Function to simulate Contois model for aggregating bacteria
+contois_model <- function(X, mu_max, Ks, Yxs, S) {
+  mu = mu_max * S / (Ks + S)
+  dXdt = mu * X
+  return(dXdt)
+}
+
+# Simulation parameters
+time <- seq(0, 100, by = 0.1)  # Time points
+S0 <- 10  # Initial substrate concentration
+X_p <- 1  # Initial biomass concentration of planktonic bacteria
+X_a <- 1  # Initial biomass concentration of aggregating bacteria
+mu_max_p <- 1  # Maximum specific growth rate of planktonic bacteria
+mu_max_a <- 1  # Maximum specific growth rate of aggregating bacteria (equal to planktonic for coexistence)
+Ks_p <- 2  # Half-saturation constant of planktonic bacteria
+Ks_a <- 2  # Half-saturation constant of aggregating bacteria (equal to planktonic for coexistence)
+Yxs_a <- 0.5  # Yield coefficient of aggregating bacteria (equal to planktonic for coexistence)
+
+# Simulate Monod model for planktonic bacteria
+output_p <- data.frame(time = time)
+output_p$Biomass <- NA
+output_p$Biomass[1] <- X_p
+for (i in 2:length(time)) {
+  S <- S0 - output_p$Biomass[i-1]
+  dXdt <- monod_model(output_p$Biomass[i-1], mu_max_p, Ks_p, S)
+  output_p$Biomass[i] <- output_p$Biomass[i-1] + dXdt * (time[i] - time[i-1])
+}
+
+# Simulate Contois model for aggregating bacteria
+output_a <- data.frame(time = time)
+output_a$Biomass <- NA
+output_a$Biomass[1] <- X_a
+for (i in 2:length(time)) {
+  S <- S0 - output_a$Biomass[i-1] * Yxs_a
+  dXdt <- contois_model(output_a$Biomass[i-1], mu_max_a, Ks_a, Yxs_a, S)
+  output_a$Biomass[i] <- output_a$Biomass[i-1] + dXdt * (time[i] - time[i-1])
+}
+
+# Plot biomass dynamics
+ggplot() +
+  geom_line(data = output_p, aes(x = time, y = Biomass, color = "Planktonic Bacteria")) +
+  geom_line(data = output_a, aes(x = time, y = Biomass, color = "Aggregating Bacteria")) +
+  labs(x = "Time", y = "Biomass", color = "Species") +
+	ggtitle("Coexistence of two bacterial types") +
+  theme_minimal()
+```

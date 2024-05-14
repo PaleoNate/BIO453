@@ -173,6 +173,11 @@ Sometimes, microbial population growth in a limited nutrient environment is mode
 2. Learn about the parameters of Monod's equation and their significance.
 3. Visualize the relationship between growth rate and substrate concentration using ggplot2.
 
+The Monod model assumes growth is balanced, there is no inhibition caused by metabolism products, and the organisms are planktonic in Newtonian fluids that are not very viscous.
+
+*Typically, microbial growth consists of a lag phase, a log phase, a stationary phase, and a death or decline phase.*
+
+
 ```{r}
 # Define Monod's equation
 monod <- function(S, mu_max, Ks) {
@@ -206,6 +211,22 @@ ggplot(data = monod_data, aes(x = S, y = Growth_Rate)) +
   annotate("text", x = Ks + 5, y = 0.4, label = "Ks", color = "red") +
   annotate("text", x = 80, y = 0.4, label = expression(mu[Max] == 0.5), color = "blue")
 ```
+
+The Monod model consists of a few parameters. 
+$$µ = µ_{max} × {S}/{(K_s + S)}$$
+$µ$ Represents the specific growth rate of the microorganisms
+
+The maximum specific growth rate ($µ_{max}$) represents the intrinsic growth potential of the microorganism under optimal conditions.
+
+The half-saturation constant ($K_s$) is the substrate concentration at which the specific growth rate is half of the maximum. It indicates the affinity of the microorganism for the substrate.
+
+The substrate concentration ($S$) affects the specific growth rate according to the Michaelis-Menten kinetics.
+
+In this first model, we will assume substrate concentration is constant $S_0$
+
+It is also possible for two different nutrients limiting growth such as Carbon, Nitrogen, or others.
+
+$$µ = µ_{max} × {S_1}/{(K_{s1} + S_1)} × {S_2}/{(K_{s2} + S_1)}$$
 
 #### Reflective Questions:
 * What does Monod's equation describe, and what are its main assumptions?

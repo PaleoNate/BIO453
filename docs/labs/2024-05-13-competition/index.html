@@ -119,7 +119,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["competition_files/anchor-4.2.2/anchor.min.js","competition_files/bowser-1.9.3/bowser.min.js","competition_files/distill-2.2.21/template.v2.js","competition_files/figure-html5/unnamed-chunk-3-1.png","competition_files/header-attrs-2.26/header-attrs.js","competition_files/jquery-3.6.0/jquery-3.6.0.js","competition_files/jquery-3.6.0/jquery-3.6.0.min.js","competition_files/jquery-3.6.0/jquery-3.6.0.min.map","competition_files/popper-2.6.0/popper.min.js","competition_files/tippy-6.2.7/tippy-bundle.umd.min.js","competition_files/tippy-6.2.7/tippy-light-border.css","competition_files/tippy-6.2.7/tippy.css","competition_files/tippy-6.2.7/tippy.umd.min.js","competition_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["competition_files/anchor-4.2.2/anchor.min.js","competition_files/bowser-1.9.3/bowser.min.js","competition_files/distill-2.2.21/template.v2.js","competition_files/figure-html5/unnamed-chunk-3-1.png","competition_files/figure-html5/unnamed-chunk-4-1.png","competition_files/figure-html5/unnamed-chunk-7-1.png","competition_files/figure-html5/unnamed-chunk-8-1.png","competition_files/header-attrs-2.26/header-attrs.js","competition_files/jquery-3.6.0/jquery-3.6.0.js","competition_files/jquery-3.6.0/jquery-3.6.0.min.js","competition_files/jquery-3.6.0/jquery-3.6.0.min.map","competition_files/popper-2.6.0/popper.min.js","competition_files/tippy-6.2.7/tippy-bundle.umd.min.js","competition_files/tippy-6.2.7/tippy-light-border.css","competition_files/tippy-6.2.7/tippy.css","competition_files/tippy-6.2.7/tippy.umd.min.js","competition_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2522,6 +2522,41 @@ Lessons
 <li><p>How would you extend this model to include more than two competing species?</p></li>
 <li><p>What challenges might arise in such a scenario?</p></li>
 </ul>
+<h2 id="this-could-be-a-different-post.">This could be a different post.</h2>
+<h3 id="monods-equation">Monod’s equation</h3>
+<p>Recall that the Monod models is a common model to predict microorganism growth.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="competition_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+</div>
+<h3 id="contois-model-of-competition">Contois model of competition</h3>
+<p>The Contois model is a classic model used to describe microbial growth in a chemostat environment, where bacteria are competing for limited resources. In this model, the growth rate of a species is proportional to the resource uptake rate and inversely proportional to the concentration of the limiting resource.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Function to simulate Contois model</span></span>
+<span><span class='va'>contois_model</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>mu_max</span>, <span class='va'>Ks</span>, <span class='va'>Yxs</span>, <span class='va'>S</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span>  <span class='co'># X: Biomass concentration</span></span>
+<span>  <span class='co'># mu_max: Maximum specific growth rate</span></span>
+<span>  <span class='co'># Ks: Half-saturation constant</span></span>
+<span>  <span class='co'># Yxs: Yield coefficient</span></span>
+<span>  <span class='co'># S: Substrate concentration</span></span>
+<span>  </span>
+<span>  <span class='va'>mu</span> <span class='op'>=</span> <span class='va'>mu_max</span> <span class='op'>*</span> <span class='va'>S</span> <span class='op'>/</span> <span class='op'>(</span><span class='va'>Ks</span> <span class='op'>+</span> <span class='va'>S</span><span class='op'>)</span></span>
+<span>  <span class='va'>dXdt</span> <span class='op'>=</span> <span class='va'>mu</span> <span class='op'>*</span> <span class='va'>X</span></span>
+<span>  <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='va'>dXdt</span><span class='op'>)</span></span>
+<span><span class='op'>}</span></span></code></pre>
+</div>
+</div>
+<p>Now lets set some simulation parameters</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="competition_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
+</div>
+<p>This plot above simulates the biomass dynamics for two bacterial species (Species 1 and Species 2) competing for a single limiting resource over time under the Contois model.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="competition_files/figure-html5/unnamed-chunk-8-1.png" width="624" /></p>
+</div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

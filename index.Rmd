@@ -31,7 +31,9 @@ ANOVA
 mark-recapture methods
 metapopulation dynamics
 source sink dynamics
-competition (LV/R*)
+LV Competition
+R* Competition
+Bacterial growth and competition
 predation
 Island biogeography
 Estimating_Diversity with collection curves and rarefaction
