@@ -1,0 +1,86 @@
+---
+title: "Microbial growth"
+description: introduction to microbial growth using Monod's equation
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r echo=FALSE}
+library(ggplot2)
+```
+
+### Monod equation
+
+Sometimes, microbial population growth in a limited nutrient environment is modeled with Monod's equation. It describes the relationship between the specific growth rate of the microorganism and the concentration of a limiting nutrient in the environment. Monod's equation assumes that growth rate increases as the concentration of the limiting nutrient increases until it reaches a maximum growth rate (maximum specific growth rate). Beyond this point, the growth rate becomes constant even if the nutrient concentration continues to increase.
+
+#### Learning Objectives:
+
+1. Understand Monod's equation and its application in describing microbial growth.
+2. Learn about the parameters of Monod's equation and their significance.
+3. Visualize the relationship between growth rate and substrate concentration using ggplot2.
+
+The Monod model assumes growth is balanced, there is no inhibition caused by metabolism products, and the organisms are planktonic in Newtonian fluids that are not very viscous.
+
+*Typically, microbial growth consists of a lag phase, a log phase, a stationary phase, and a death or decline phase.*
+
+
+```{r}
+# Define Monod's equation
+monod <- function(S, mu_max, Ks) {
+  mu <- mu_max * (S / (Ks + S))
+  return(mu)
+}
+```
+
+Generate substrate concentrations
+
+```{r}
+S <- seq(0, 100, by = 1) # Substrate concentration range
+
+# Set parameter values
+mu_max <- 0.5  # Maximum specific growth rate (per time unit)
+Ks <- 20       # Half-saturation constant (substrate concentration at half the maximum growth rate)
+
+# Calculate growth rates using Monod's equation
+growth_rate <- monod(S, mu_max, Ks)
+
+# Create dataframe for plotting
+monod_data <- data.frame(S = S, Growth_Rate = growth_rate)
+
+# Plot Monod curve
+ggplot(data = monod_data, aes(x = S, y = Growth_Rate)) +
+  geom_line(color = "blue") +
+  labs(x = "Substrate Concentration", y = "Growth Rate", 
+       title = "Monod's Equation: Microbial Growth Rate vs Substrate Concentration") +
+  theme_minimal() +
+  geom_vline(xintercept = Ks, linetype = "dashed", color = "red") +
+  annotate("text", x = Ks + 5, y = 0.4, label = "Ks", color = "red") +
+  annotate("text", x = 80, y = 0.4, label = expression(mu[Max] == 0.5), color = "blue")
+```
+
+
+The Monod model consists of a few parameters. 
+$$µ = µ_{max} × {S}/{(K_s + S)}$$
+$µ$ Represents the specific growth rate of the microorganisms
+
+The maximum specific growth rate ($µ_{max}$) represents the intrinsic growth potential of the microorganism under optimal conditions.
+
+The half-saturation constant ($K_s$) is the substrate concentration at which the specific growth rate is half of the maximum. It indicates the affinity of the microorganism for the substrate.
+
+The substrate concentration ($S$) affects the specific growth rate according to the Michaelis-Menten kinetics.
+
+In this first model, we will assume substrate concentration is constant $S_0$
+
+It is also possible for two different nutrients limiting growth such as Carbon, Nitrogen, or others.
+
+$$µ = µ_{max} × {S_1}/{(K_{s1} + S_1)} × {S_2}/{(K_{s2} + S_1)}$$
+
+#### Reflective Questions:
+* What does Monod's equation describe, and what are its main assumptions?
+* How do changes in the parameter values affect the shape of the Monod curve?
+* Can you identify situations in real-world environments where Monod's equation might be applicable?
+* How might deviations from Monod's equation occur in complex microbial communities?
+* How does the shape of the Monod curve change with different parameter values of mu_max and Ks?
+* What does the half-saturation constant (Ks) represent in Monod's equation, and why is it important in microbial growth kinetics?
+* Can you think of examples where Monod's equation might not accurately describe microbial growth dynamics? What factors could influence deviations from Monod kinetics?
+

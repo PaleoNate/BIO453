@@ -26,6 +26,7 @@ This is the unofficial course website for BIO 453: Ecology at William Jewell Col
 ## Notes
 
 I plan to create the following lab modules
+Microbial growth
 linear regression
 ANOVA
 mark-recapture methods
