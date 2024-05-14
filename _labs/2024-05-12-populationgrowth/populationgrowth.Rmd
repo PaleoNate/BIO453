@@ -9,7 +9,7 @@ output: distill::distill_article
 library(ggplot2)
 ```
 
-### Introduction to Population Growth Models
+## Introduction to Population Growth Models
 
 In ecology, understanding how populations may change over time is crucial. Two common models used to describe population growth are the exponential growth model of density-independent population growth and the logistic growth model fo density-dependent population growth.
 
@@ -100,7 +100,10 @@ In the figure above, you can observe logistic population growth. Initially, the 
 
 ### Density-Dependent Changes in Birthrate and Death Rate
 
-In logistic growth, changes in birth and death rates are density-dependent, meaning they are influenced by the population density. For outcrossing organisms, very small population densities might be dangerous because they can result in low birth rates (allee effects). However, in general at small population sizes birth rates are high and death rates are low. This resulting in rapid population growth. However, as the population grows competition for resources increases, leading to decreased birth rates and increased death rates. When birth rates and death rates balance out, the model is at carrying capacity.
+To think a bit more about where carrying capacity comes from, we can decouple the density-dependence of per-capita birth and death rates in the logistic growth model. In general at small population sizes when resources are abundant, birth rates are high and death rates are low. This resulting in rapid population growth. However, as the population grows competition for resources increases, leading to decreased birth rates and increased death rates. We can model these changes as linear functions, or more complex relationships, but when the per-capita birth rates and death rates balance out, the system is at carrying capacity.
+
+$$b = b_0 − aN$$
+$$d = d_0 + cN$$ 
 
 ```{r}
 # Define population size and parameters
@@ -135,8 +138,81 @@ ggplot(df, aes(x = population_size)) +
 
 In the plot above, you can see how the declining per-capita birth rate (blue) and increasing per-capita death rate (red) interact to set the carrying capacity (dashed red vertical line), where the net growth rate (black dashed horizontal line) becomes zero.
 
+### Allee effect
+
+The Allee effect is a positive relation between average fitness and population size at low population densities (Drake and Kramer 2011). This means there is a *positive* relationship between the per capita birth rate rate and population size. This can result in positive density dependence rather than negative density dependence and typically happens at very low population sizes.
+
+Allee effects can occur in populations of obligate outcrossers because at very low population sizes, male and female individuals are less likely to encounter each other or be pollinated by the same pollinator, and so mating frequency is very low. As population size increases, individuals are more likely to encounter each other, and mating increases.
+
+We can model this by adding a term to our model, which incorporates a threshold population size $a$, below which the population growth rate is negative.
+
 ```{r}
-# Allee effect code
+## for simplicity, we let r=1 so we can ignore it here.
+pgrA <- function(N, alpha, a, tau){ N*(1-alpha*N)*(1-(a+tau)/(N+tau)) }
+myData <- data.frame( N=c(0, 110) ) # ggplot requires a data frame
+p <- ggplot(data=myData, aes(x=N)) + # set the basic properties of the plot
+  # in the stat_function, we indicate the parameters in our equation.
+    stat_function(fun=pgrA, geom="line", n=1001,
+                  args=list(alpha = 0.01, a=20, tau=.1)) + 
+  labs(y="Population growth rate (dN/dt)", x="Population size (N)") + 
+  #theme_classic() + 
+  geom_hline(yintercept=0, lty=3)+
+  scale_x_continuous(expand = c(0, 0)) 
+p
 ```
 
 In the plot above, you can see the non-linear birth rate (blue) with Allee effects, where the birth rate starts low, increases with population size, and then declines as competition depresses birth rates, The carrying capacity is denoted by the dashed vertical black line.
+
+### Monod equation
+
+Sometimes, microbial population growth in a limited nutrient environment is modeled with Monod's equation. It describes the relationship between the specific growth rate of the microorganism and the concentration of a limiting nutrient in the environment. Monod's equation assumes that growth rate increases as the concentration of the limiting nutrient increases until it reaches a maximum growth rate (maximum specific growth rate). Beyond this point, the growth rate becomes constant even if the nutrient concentration continues to increase.
+
+#### Learning Objectives:
+
+1. Understand Monod's equation and its application in describing microbial growth.
+2. Learn about the parameters of Monod's equation and their significance.
+3. Visualize the relationship between growth rate and substrate concentration using ggplot2.
+
+```{r}
+# Define Monod's equation
+monod <- function(S, mu_max, Ks) {
+  mu <- mu_max * (S / (Ks + S))
+  return(mu)
+}
+```
+
+Generate substrate concentrations
+
+```{r}
+S <- seq(0, 100, by = 1) # Substrate concentration range
+
+# Set parameter values
+mu_max <- 0.5  # Maximum specific growth rate (per time unit)
+Ks <- 20       # Half-saturation constant (substrate concentration at half the maximum growth rate)
+
+# Calculate growth rates using Monod's equation
+growth_rate <- monod(S, mu_max, Ks)
+
+# Create dataframe for plotting
+monod_data <- data.frame(S = S, Growth_Rate = growth_rate)
+
+# Plot Monod curve
+ggplot(data = monod_data, aes(x = S, y = Growth_Rate)) +
+  geom_line(color = "blue") +
+  labs(x = "Substrate Concentration", y = "Growth Rate", 
+       title = "Monod's Equation: Microbial Growth Rate vs Substrate Concentration") +
+  theme_minimal() +
+  geom_vline(xintercept = Ks, linetype = "dashed", color = "red") +
+  annotate("text", x = Ks + 5, y = 0.4, label = "Ks", color = "red") +
+  annotate("text", x = 80, y = 0.4, label = expression(mu[Max] == 0.5), color = "blue")
+```
+
+#### Reflective Questions:
+* What does Monod's equation describe, and what are its main assumptions?
+* How do changes in the parameter values affect the shape of the Monod curve?
+* Can you identify situations in real-world environments where Monod's equation might be applicable?
+* How might deviations from Monod's equation occur in complex microbial communities?
+* How does the shape of the Monod curve change with different parameter values of mu_max and Ks?
+* What does the half-saturation constant (Ks) represent in Monod's equation, and why is it important in microbial growth kinetics?
+* Can you think of examples where Monod's equation might not accurately describe microbial growth dynamics? What factors could influence deviations from Monod kinetics?
+
