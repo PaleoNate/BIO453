@@ -1,0 +1,108 @@
+---
+title: "Optimal foraging of patchy resources"
+description: a brief introduction to optial foraging
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+### Learning Objectives:
+1. Understand the concept of a patch model in foraging ecology.
+2. Learn how to simulate and visualize a simple patch model using R and ggplot2.
+3. Explore the relationship between forager behavior and patch characteristics.
+
+In this lab, we will consider how foragers such as insects that pollinate plants, optimize their foraging behavior. We will consider goldenrod plants as the patches and soldier beetles as the foragers. How long should a soldier beetle remain at an inflorescence before moving on? 
+
+In this basic patch model, a forager traverses and engages with patches individually, initially consuming resources and then deliberating whether to depart or remain. One of the fundamental predictions of this uncomplicated patch model suggests that a forager ought to depart a patch when its current rate of energy acquisition declines to match the average or anticipated rate of energy gain across the broader habitat.
+
+The marginal-value theorem can help ups understand optimal foraging behavior. Here, akin to economic theory, "marginal value" pertains to a rate - the gradient of a function. In mathematical terms, this corresponds to a derivative. In the context of foraging behavior, it signifies the derivative (i.e., slope) of the relationship between energy acquisition and time.
+
+I our simple patch model there is a single patch type, the patches are uniform, and the patches randomly distributed within the habitat. Additionally, let's assume that foragers expend time both in transit between patches (travel time, $t_t$) and while actively searching within a patch (residence time, $t_r$). Foragers encounter patches randomly at a rate of $λ$, implying an average time until the next encounter of 
+$1/λ$.
+
+Each patch is defined by its gain function $g(t_r)$, representing the anticipated cumulative net energy gained given the time ($t_r$) spent within the patch. This gain function represents a cumulative net amount over time. In this model the longer the forager the remains, the more energy it gains, but with diminishing returns. You could also imagine a function where eventually the costs of remaining overwhelm the gains and net engery gain begins to decline.
+
+```{r}
+# Load required libraries
+library(ggplot2)
+
+# Define custom function for cumulative net energy gain
+custom_function <- function(time) {
+  net_gain <- 0.5 * (1 - exp(-0.05 * time))  # Example function: steep increase that levels off
+  return(net_gain)
+}
+
+# Define patch residence time range
+residence_time <- seq(0, 60, by = 1)  # Patch residence time
+
+# Calculate cumulative net energy gain using custom function
+cumulative_gain <- custom_function(residence_time)
+
+# Create dataframe for plotting
+net_gain_data <- data.frame(Residence_Time = residence_time,
+                            Cumulative_Net_Gain = cumulative_gain)
+
+# Plot residence time vs cumulative net energy gain
+ggplot(data = net_gain_data, aes(x = Residence_Time, y = Cumulative_Net_Gain)) +
+  geom_line(color = "blue") +
+  labs(x = "Patch Residence Time", y = "Cumulative Net Energy Gain",
+       title = "Cumulative Net Energy Gain vs Patch Residence Time") +
+  theme_minimal()
+```
+
+Now optimize!
+
+```{r}
+# Define custom function for cumulative net energy gain
+custom_function <- function(time) {
+  net_gain <- 0.5 * (1 - exp(-0.05 * time))  # Example function: steep increase that levels off
+  return(net_gain)
+}
+
+# Define derivative of the custom function
+derivative_function <- function(time) {
+  derivative <- 0.5 * 0.05 * exp(-0.05 * time)  # Derivative of the custom function
+  return(derivative)
+}
+
+# Set travel time between patches
+travel_time <- 5  # Travel time in minutes
+
+# Find the optimal time between patches
+optimal_time <- uniroot(function(x) custom_function(x) - (x + travel_time) * derivative_function(x), interval = c(0, 100))$root
+
+# Calculate the y-coordinate of the tangent line at the optimal time
+optimal_gain <- custom_function(optimal_time)
+
+# Calculate the slope of the tangent line
+tangent_slope <- derivative_function(optimal_time)
+
+# Calculate the y-intercept of the tangent line
+tangent_intercept <- optimal_gain - tangent_slope * optimal_time
+
+# Define patch residence time range
+residence_time <- seq(0, 60, by = 1)  # Patch residence time
+
+# Calculate cumulative net energy gain using custom function
+cumulative_gain <- custom_function(residence_time)
+
+# Create dataframe for plotting
+net_gain_data <- data.frame(Residence_Time = residence_time,
+                            Cumulative_Net_Gain = cumulative_gain)
+
+# Plot residence time vs cumulative net energy gain with tangent line
+ggplot(data = net_gain_data, aes(x = Residence_Time, y = Cumulative_Net_Gain)) +
+	xlim(-10,60) +
+  geom_line(color = "blue") +
+  geom_abline(intercept = tangent_intercept, slope = tangent_slope, color = "red", linetype = "dashed") +
+  geom_point(x = optimal_time, y = optimal_gain, color = "red", size = 3) +
+  annotate("text", x = optimal_time, y = optimal_gain + 0.05, label = paste("Optimal Time:", round(optimal_time, 2)), color = "red", vjust = -1) +
+  labs(x = "Patch Residence Time", y = "Cumulative Net Energy Gain",
+       title = "Cumulative Net Energy Gain vs Patch Residence Time") +
+  theme_minimal()
+```
+
+
+### Reflective Questions:
+1. How might the distribution of patches within the habitat influence forager behavior?
+2. Can you identify real-world examples where the assumptions of this patch model might hold true?
+3. How might variations in patch quality affect the forager's decision-making process?
